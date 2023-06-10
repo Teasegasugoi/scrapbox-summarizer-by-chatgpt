@@ -1,0 +1,6 @@
+{
+	"manifest_version": 3,
+	"name": "Scrapbox Summarizer by ChatGPT",
+	"description": "Extension for Summarizing Scrapbox Texts using ChatGPT",
+	"version": "1.0"
+}
