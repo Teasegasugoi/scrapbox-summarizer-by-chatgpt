@@ -3,6 +3,12 @@
 	"name": "Scrapbox Summarizer by ChatGPT",
 	"description": "Extension for Summarizing Scrapbox Texts using ChatGPT",
 	"version": "1.0",
+	"permissions": [
+		"contextMenus"
+	],
+	"background": {
+		"service_worker": "service-worker.js"
+	},
 	"icons": {
 		"16": "images/icon-16.png",
 		"32": "images/icon-32.png",
