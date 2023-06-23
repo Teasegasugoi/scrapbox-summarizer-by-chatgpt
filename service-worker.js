@@ -1,3 +1,11 @@
+try {
+  importScripts("wasm_exec.js", "load_go.js");
+} catch (e) {
+  console.error(e);
+}
+
+let selection;
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     "id": "scrapbox-summarizer-by-chatgpt",
@@ -7,9 +15,14 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  //  取得した文字列を formatter.go でフォーマット
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.selection !== '') {
+    selection = message.selection;
+  }
+  return true;
+});
 
-  // ChatGPTに送信
-
-})
+// chrome.contextMenus.onClicked.addListener(() => {
+//   let formatted = format(selection);
+//   console.log(formatted);
+// });
