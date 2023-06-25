@@ -4,6 +4,7 @@ try {
   console.error(e);
 }
 
+const BASE_URL = "https://chat.openai.com/";
 let selection;
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -16,13 +17,37 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener((message) => {
-  if (message.selection !== '') {
+  if (message.selection !== '' && message.selection !== undefined) {
     selection = message.selection;
   }
   return true;
 });
 
-// chrome.contextMenus.onClicked.addListener(() => {
-//   let formatted = format(selection);
-//   console.log(formatted);
-// });
+function setValue(formatted) {
+  window.onload = () => {
+    const elem = document.getElementById("prompt-textarea");
+    if (elem) {
+      // FIX: Deprecated, Rewrite it in a different way
+      document.execCommand('insertText', false, formatted);
+      // TODO: auto click button
+      // const button = elem.nextElementSibling;
+      // if (button && button.tagName === "BUTTON") {
+      //   button.click();
+      // }
+    }
+  }
+}
+
+chrome.contextMenus.onClicked.addListener(() => {
+  let formatted = format(selection);
+  chrome.tabs.create({ url: BASE_URL });
+  chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+    if (changeInfo.url === BASE_URL) {
+      await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: setValue,
+        args: [formatted]
+      });
+    }
+  });
+});
