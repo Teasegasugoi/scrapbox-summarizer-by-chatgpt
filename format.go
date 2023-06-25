@@ -17,6 +17,7 @@ func format(this js.Value, args []js.Value) any {
 		return ""
 	}
 	var output []string
+	output = append(output, "以下の箇条書きを１つの文章にまとめなさい\n")
 	for _, item := range arr {
 		index := countHeadSpaces(item)
 		output = append(output, blankToDot(item, index))
