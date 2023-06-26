@@ -13,32 +13,23 @@ func main() {
 func format(this js.Value, args []js.Value) any {
 	target := args[0].String()
 	arr := strings.Split(target, "\n")
-	if !isScrapboxFormat(arr) {
-		return ""
-	}
 	var output []string
-	output = append(output, "以下の箇条書きを１つの文章にまとめなさい\n")
+	output = append(output, "以下の箇条書きを1つに文章化しなさい\n\n")
 	for _, item := range arr {
 		index := countHeadSpaces(item)
-		output = append(output, blankToDot(item, index))
+		if index != 0 {
+			output = append(output, blankToDot(item, index))
+		} else {
+			output = append(output, item)
+		}
 	}
 	return strings.Join(output, "\n")
 }
-
-func isScrapboxFormat(arr []string) bool {
-	for _, item := range arr {
-		count := countHeadSpaces(item)
-		if count == 0 {
-			return false
-		}
-	}
-	return true
-}
-
 func countHeadSpaces(str string) int {
 	count := 0
 	for _, r := range str {
-		if r != '	' {
+		// U+0009, U+0020, U+3000
+		if r != '	' && r != ' ' && r != '　' {
 			break
 		}
 		count++
@@ -48,6 +39,10 @@ func countHeadSpaces(str string) int {
 
 func blankToDot(str string, index int) string {
 	r := []rune(str)
+	// Unified with U+3000
+	for i := 0; i < index; i++ {
+		r[i] = rune(' ')
+	}
 	r[index-1] = rune('・')
-	return string(r)
+	return strings.Join([]string{string(r[:index]), string(rune(' ')), string(r[index:])}, "")
 }
